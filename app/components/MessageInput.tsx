@@ -5,8 +5,12 @@ import classNames from "classnames";
 
 export default function MessageInput({
   addMessage,
+  isLoading,
+  stopBotMessage,
 }: {
   addMessage: (message: string) => void;
+  isLoading: boolean;
+  stopBotMessage: () => void;
 }) {
   const [inputMessage, setInputMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -22,6 +26,14 @@ export default function MessageInput({
       addMessage(inputMessage.trim());
       setInputMessage("");
       resetTextareaHeight();
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (isLoading) {
+      stopBotMessage();
+    } else {
+      handleSendMessage();
     }
   };
 
@@ -52,29 +64,47 @@ export default function MessageInput({
         rows={1}
       />
       <button
-        onClick={handleSendMessage}
+        onClick={handleButtonClick}
         className={classNames(
           "tw-p-2 tw-bg-orange-500 tw-text-white tw-rounded tw-hover:bg-orange-600 tw-transition-colors tw-duration-200",
           "disabled:tw-opacity-50 disabled:tw-cursor-not-allowed"
         )}
-        disabled={!inputMessage.trim()}
+        disabled={!isLoading && !inputMessage.trim()}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="icon icon-tabler icons-tabler-outline icon-tabler-send"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <path d="M10 14l11 -11" />
-          <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" />
-        </svg>
+        {isLoading ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="icon icon-tabler icons-tabler-outline icon-tabler-square"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="icon icon-tabler icons-tabler-outline icon-tabler-send"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M10 14l11 -11" />
+            <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" />
+          </svg>
+        )}
       </button>
     </div>
   );
