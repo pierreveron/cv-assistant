@@ -2,16 +2,11 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import classNames from "classnames";
+import { useChat } from "../providers/ChatProvider";
 
-export default function MessageInput({
-  addMessage,
-  isLoading,
-  stopBotMessage,
-}: {
-  addMessage: (message: string) => void;
-  isLoading: boolean;
-  stopBotMessage: () => void;
-}) {
+export default function MessageInput() {
+  const { isLoading, addMessage, stopBotMessage } = useChat();
+
   const [inputMessage, setInputMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 

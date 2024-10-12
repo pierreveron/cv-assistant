@@ -1,73 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
 import MessageInput from "./MessageInput";
 import classNames from "classnames";
-import { Message } from "../utils/types";
-import { streamResponse } from "../utils/mistralai";
 import Image from "next/image";
+import { useChat } from "../providers/ChatProvider";
 
 export default function ChatComponent() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentStreamedMessage, setCurrentStreamedMessage] = useState("");
-  const abortControllerRef = useRef<AbortController | null>(null);
-
-  const addMessage = async (message: string) => {
-    const newUserMessage = { text: message, sender: "user" } as Message;
-    setMessages((prevMessages) => [...prevMessages, newUserMessage]);
-    setIsLoading(true);
-
-    setCurrentStreamedMessage("");
-    let accumulatedMessage = "";
-
-    try {
-      abortControllerRef.current = new AbortController();
-      const stream = streamResponse([...messages, newUserMessage], {
-        abortSignal: abortControllerRef.current.signal,
-      });
-
-      for await (const chunk of stream) {
-        accumulatedMessage += chunk;
-        setCurrentStreamedMessage(accumulatedMessage);
-      }
-
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: accumulatedMessage, sender: "bot" },
-      ]);
-    } catch (error) {
-      console.error("Error generating bot response:", error);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          text: "An error occurred on the server side. Please try again.",
-          sender: "bot",
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-      setCurrentStreamedMessage("");
-    }
-  };
-
-  const stopBotMessage = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-      setIsLoading(false);
-    }
-  };
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(
-      () => {
-        console.log("Text copied to clipboard");
-      },
-      (err) => {
-        console.error("Could not copy text: ", err);
-      }
-    );
-  };
+  const { messages, isLoading, currentStreamedMessage, copyToClipboard } =
+    useChat();
 
   return (
     <div className="tw-flex tw-flex-col tw-h-full tw-w-full tw-max-w-[80%] tw-mx-auto tw-mb-4">
@@ -146,11 +86,7 @@ export default function ChatComponent() {
           </div>
         )}
       </div>
-      <MessageInput
-        addMessage={addMessage}
-        isLoading={isLoading}
-        stopBotMessage={stopBotMessage}
-      />
+      <MessageInput />
     </div>
   );
 }
