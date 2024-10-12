@@ -4,36 +4,37 @@ import { useState, useRef } from "react";
 import MessageInput from "./MessageInput";
 import classNames from "classnames";
 import { Message } from "../utils/types";
-import { run } from "../utils/mistralai";
+import { streamResponse } from "../utils/mistralai";
 
 export default function ChatComponent() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentStreamedMessage, setCurrentStreamedMessage] = useState("");
   const abortControllerRef = useRef<AbortController | null>(null);
+
   const addMessage = async (message: string) => {
     const newUserMessage = { text: message, sender: "user" } as Message;
     setMessages((prevMessages) => [...prevMessages, newUserMessage]);
     setIsLoading(true);
 
+    setCurrentStreamedMessage("");
+    let accumulatedMessage = "";
+
     try {
       abortControllerRef.current = new AbortController();
-      const botResponse = await run([...messages, newUserMessage], {
+      const stream = streamResponse([...messages, newUserMessage], {
         abortSignal: abortControllerRef.current.signal,
       });
-      if (botResponse) {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { text: botResponse, sender: "bot" },
-        ]);
-      } else {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            text: "Oups sorry, an error occurred: the generated message is empty. Please try again.",
-            sender: "bot",
-          },
-        ]);
+
+      for await (const chunk of stream) {
+        accumulatedMessage += chunk;
+        setCurrentStreamedMessage(accumulatedMessage);
       }
+
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: accumulatedMessage, sender: "bot" },
+      ]);
     } catch (error) {
       console.error("Error generating bot response:", error);
       setMessages((prevMessages) => [
@@ -45,6 +46,7 @@ export default function ChatComponent() {
       ]);
     } finally {
       setIsLoading(false);
+      setCurrentStreamedMessage("");
     }
   };
 
@@ -118,7 +120,9 @@ export default function ChatComponent() {
         {isLoading && (
           <div className="tw-flex tw-justify-start">
             <div className="tw-p-3 tw-rounded-2xl tw-bg-white tw-text-gray-800">
-              <span className="tw-animate-pulse">Thinking...</span>
+              {currentStreamedMessage || (
+                <span className="tw-animate-pulse">Thinking...</span>
+              )}
             </div>
           </div>
         )}
