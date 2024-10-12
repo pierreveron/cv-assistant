@@ -5,6 +5,7 @@ import MessageInput from "./MessageInput";
 import classNames from "classnames";
 import { Message } from "../utils/types";
 import { streamResponse } from "../utils/mistralai";
+import Image from "next/image";
 
 export default function ChatComponent() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -79,6 +80,16 @@ export default function ChatComponent() {
               message.sender === "user" ? "tw-justify-end" : "tw-justify-start"
             )}
           >
+            {message.sender === "bot" && (
+              <div className="tw-inline-flex tw-h-7 tw-w-7 tw-shrink-0 tw-items-center tw-justify-center -ml-3.5 tw-bg-background">
+                <Image
+                  src="/logo-mistral.png"
+                  alt="Mistral AI Logo"
+                  width={24}
+                  height={24}
+                />
+              </div>
+            )}
             <div className="tw-flex tw-items-end tw-gap-2 tw-max-w-[80%]">
               <div
                 className={classNames(
@@ -119,6 +130,14 @@ export default function ChatComponent() {
         ))}
         {isLoading && (
           <div className="tw-flex tw-justify-start tw-max-w-[80%]">
+            <div className="tw-inline-flex tw-h-7 tw-w-7 tw-shrink-0 tw-items-center tw-justify-center -ml-3.5 tw-bg-background">
+              <Image
+                src="/logo-mistral.png"
+                alt="Mistral AI Logo"
+                width={24}
+                height={24}
+              />
+            </div>
             <div className="tw-p-3 tw-rounded-2xl tw-bg-white tw-text-gray-800">
               {currentStreamedMessage || (
                 <span className="tw-animate-pulse">Thinking...</span>
