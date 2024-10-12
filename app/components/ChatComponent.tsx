@@ -118,7 +118,7 @@ export default function ChatComponent() {
           </div>
         ))}
         {isLoading && (
-          <div className="tw-flex tw-justify-start">
+          <div className="tw-flex tw-justify-start tw-max-w-[80%]">
             <div className="tw-p-3 tw-rounded-2xl tw-bg-white tw-text-gray-800">
               {currentStreamedMessage || (
                 <span className="tw-animate-pulse">Thinking...</span>
