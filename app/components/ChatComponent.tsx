@@ -3,37 +3,54 @@
 import { useState, useRef } from "react";
 import MessageInput from "./MessageInput";
 import classNames from "classnames";
-
-interface Message {
-  text: string;
-  sender: "user" | "bot";
-}
+import { Message } from "../utils/types";
+import { run } from "../utils/mistralai";
 
 export default function ChatComponent() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const addMessage = (message: string) => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { text: message, sender: "user" },
-    ]);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const addMessage = async (message: string) => {
+    const newUserMessage = { text: message, sender: "user" } as Message;
+    setMessages((prevMessages) => [...prevMessages, newUserMessage]);
     setIsLoading(true);
 
-    // Simulate a delay before the bot responds
-    timeoutRef.current = setTimeout(() => {
+    try {
+      abortControllerRef.current = new AbortController();
+      const botResponse = await run([...messages, newUserMessage], {
+        abortSignal: abortControllerRef.current.signal,
+      });
+      if (botResponse) {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: botResponse, sender: "bot" },
+        ]);
+      } else {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            text: "Oups sorry, an error occurred: the generated message is empty. Please try again.",
+            sender: "bot",
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error generating bot response:", error);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: "Hello world", sender: "bot" },
+        {
+          text: "An error occurred on the server side. Please try again.",
+          sender: "bot",
+        },
       ]);
+    } finally {
       setIsLoading(false);
-    }, 1500); // 1.5 seconds delay
+    }
   };
 
   const stopBotMessage = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
       setIsLoading(false);
     }
   };
