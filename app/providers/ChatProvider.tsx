@@ -15,6 +15,7 @@ interface ChatContextType {
   addMessage: (message: string) => Promise<void>;
   stopBotMessage: () => void;
   copyToClipboard: (text: string) => void;
+  resetChat: () => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -94,6 +95,15 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   }, []);
 
+  const resetChat = useCallback(() => {
+    setMessages([]);
+    setIsLoading(false);
+    setCurrentStreamedMessage("");
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+  }, []);
+
   return (
     <ChatContext.Provider
       value={{
@@ -103,6 +113,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         addMessage,
         stopBotMessage,
         copyToClipboard,
+        resetChat,
       }}
     >
       {children}
