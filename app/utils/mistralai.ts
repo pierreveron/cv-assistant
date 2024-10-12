@@ -4,11 +4,17 @@ import { Message } from "./types";
 const mistral = new Mistral({
   apiKey: process.env.NEXT_PUBLIC_MISTRAL_API_KEY ?? "",
 });
+export type Model =
+  | "mistral-large-latest"
+  | "mistral-small-latest"
+  | "codestral-latest"
+  | "pixtral-12b-2409"
+  | "open-mistral-nemo";
 
 export async function completeResponse(
   messages: Message[],
   params?: {
-    model?: string;
+    model?: Model;
     abortSignal?: AbortSignal;
   }
 ): Promise<string | null> {
@@ -33,7 +39,7 @@ export async function completeResponse(
 export async function* streamResponse(
   messages: Message[],
   params?: {
-    model?: string;
+    model?: Model;
     abortSignal?: AbortSignal;
   }
 ): AsyncGenerator<string, void, unknown> {

@@ -6,7 +6,7 @@ import React, {
   useRef,
 } from "react";
 import { Message } from "../utils/types";
-import { streamResponse } from "../utils/mistralai";
+import { Model, streamResponse } from "../utils/mistralai";
 
 interface ChatContextType {
   messages: Message[];
@@ -16,6 +16,8 @@ interface ChatContextType {
   stopBotMessage: () => void;
   copyToClipboard: (text: string) => void;
   resetChat: () => void;
+  currentModel: Model;
+  setModel: (model: Model) => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -35,6 +37,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [currentStreamedMessage, setCurrentStreamedMessage] = useState("");
   const abortControllerRef = useRef<AbortController | null>(null);
+  const [currentModel, setCurrentModel] = useState<Model>(
+    "mistral-small-latest"
+  );
 
   const addMessage = useCallback(
     async (message: string) => {
@@ -49,6 +54,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         abortControllerRef.current = new AbortController();
         const stream = streamResponse([...messages, newUserMessage], {
           abortSignal: abortControllerRef.current.signal,
+          model: currentModel,
         });
 
         for await (const chunk of stream) {
@@ -74,7 +80,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         setCurrentStreamedMessage("");
       }
     },
-    [messages]
+    [messages, currentModel]
   );
 
   const stopBotMessage = useCallback(() => {
@@ -104,6 +110,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
+  const setModel = useCallback((model: Model) => {
+    setCurrentModel(model);
+  }, []);
+
   return (
     <ChatContext.Provider
       value={{
@@ -114,6 +124,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         stopBotMessage,
         copyToClipboard,
         resetChat,
+        currentModel,
+        setModel,
       }}
     >
       {children}
