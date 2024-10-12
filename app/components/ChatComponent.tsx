@@ -3,37 +3,56 @@
 import { useState, useRef } from "react";
 import MessageInput from "./MessageInput";
 import classNames from "classnames";
-
-interface Message {
-  text: string;
-  sender: "user" | "bot";
-}
+import { Message } from "../utils/types";
+import { streamResponse } from "../utils/mistralai";
 
 export default function ChatComponent() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [currentStreamedMessage, setCurrentStreamedMessage] = useState("");
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  const addMessage = (message: string) => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { text: message, sender: "user" },
-    ]);
+  const addMessage = async (message: string) => {
+    const newUserMessage = { text: message, sender: "user" } as Message;
+    setMessages((prevMessages) => [...prevMessages, newUserMessage]);
     setIsLoading(true);
 
-    // Simulate a delay before the bot responds
-    timeoutRef.current = setTimeout(() => {
+    setCurrentStreamedMessage("");
+    let accumulatedMessage = "";
+
+    try {
+      abortControllerRef.current = new AbortController();
+      const stream = streamResponse([...messages, newUserMessage], {
+        abortSignal: abortControllerRef.current.signal,
+      });
+
+      for await (const chunk of stream) {
+        accumulatedMessage += chunk;
+        setCurrentStreamedMessage(accumulatedMessage);
+      }
+
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: "Hello world", sender: "bot" },
+        { text: accumulatedMessage, sender: "bot" },
       ]);
+    } catch (error) {
+      console.error("Error generating bot response:", error);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          text: "An error occurred on the server side. Please try again.",
+          sender: "bot",
+        },
+      ]);
+    } finally {
       setIsLoading(false);
-    }, 1500); // 1.5 seconds delay
+      setCurrentStreamedMessage("");
+    }
   };
 
   const stopBotMessage = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
       setIsLoading(false);
     }
   };
@@ -99,9 +118,11 @@ export default function ChatComponent() {
           </div>
         ))}
         {isLoading && (
-          <div className="tw-flex tw-justify-start">
+          <div className="tw-flex tw-justify-start tw-max-w-[80%]">
             <div className="tw-p-3 tw-rounded-2xl tw-bg-white tw-text-gray-800">
-              <span className="tw-animate-pulse">Thinking...</span>
+              {currentStreamedMessage || (
+                <span className="tw-animate-pulse">Thinking...</span>
+              )}
             </div>
           </div>
         )}
