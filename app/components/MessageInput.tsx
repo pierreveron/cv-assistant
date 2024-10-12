@@ -61,7 +61,10 @@ export default function MessageInput({
         value={inputMessage}
         onChange={(e) => setInputMessage(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="tw-bg-inherit tw-flex-grow tw-p-2 tw-resize-none tw-overflow-scroll tw-min-h-0 tw-max-h-[10em] focus:tw-outline-none"
+        className={classNames(
+          "tw-bg-inherit tw-flex-grow tw-p-2 tw-resize-none tw-overflow-scroll tw-min-h-0 tw-max-h-[10em] focus:tw-outline-none",
+          "placeholder:tw-text-gray-500"
+        )}
         placeholder="How can Mistral help you today?"
         rows={1}
       />
