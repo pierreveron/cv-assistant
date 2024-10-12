@@ -4,9 +4,9 @@ import React, { useState, useRef, useEffect } from "react";
 import classNames from "classnames";
 
 export default function MessageInput({
-  setMessages,
+  addMessage,
 }: {
-  setMessages: React.Dispatch<React.SetStateAction<string[]>>;
+  addMessage: (message: string) => void;
 }) {
   const [inputMessage, setInputMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -19,7 +19,7 @@ export default function MessageInput({
 
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
-      setMessages((messages) => [...messages, inputMessage]);
+      addMessage(inputMessage.trim());
       setInputMessage("");
       resetTextareaHeight();
     }
