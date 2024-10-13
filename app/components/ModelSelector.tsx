@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useChat } from "../providers/ChatProvider";
 import { Model } from "../utils/mistralai";
+import classNames from "classnames";
 
 const ModelSelector: React.FC = () => {
   const { currentModel, setModel } = useChat();
@@ -49,7 +50,11 @@ const ModelSelector: React.FC = () => {
     <div className="tw-relative">
       <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="tw-text-2xl tw-font-bold tw-cursor-pointer tw-flex tw-items-center tw-px-3 tw-py-1 tw-rounded-md hover:tw-bg-gray-100 hover:tw-text-gray-900 tw-transition-colors"
+        className={classNames(
+          "tw-text-2xl tw-font-bold tw-cursor-pointer tw-flex tw-items-center tw-px-3 tw-py-1 tw-rounded-md tw-transition-colors",
+          "tw-text-gray-900 hover:tw-bg-gray-200",
+          "dark:tw-text-white dark:hover:tw-bg-gray-800"
+        )}
       >
         {models.find((m) => m.name === currentModel)?.displayName}
         <svg
@@ -69,11 +74,20 @@ const ModelSelector: React.FC = () => {
         </svg>
       </button>
       {isDropdownOpen && (
-        <div className="tw-absolute tw-top-full tw-left-1/2 tw-transform -tw-translate-x-1/2 tw-mt-2 tw-w-48 tw-bg-white tw-rounded-md tw-shadow-lg tw-z-10">
+        <div
+          className={classNames(
+            "tw-absolute tw-top-full tw-left-1/2 tw-transform -tw-translate-x-1/2 tw-mt-2 tw-w-48 tw-rounded-md tw-shadow-lg tw-z-10 tw-overflow-clip",
+            "tw-bg-white dark:tw-bg-gray-900"
+          )}
+        >
           {models.map((model) => (
             <button
               key={model.name}
-              className="tw-block tw-w-full tw-text-left tw-px-4 tw-py-2 tw-text-sm tw-text-gray-700 hover:tw-bg-gray-100"
+              className={classNames(
+                "tw-block tw-w-full tw-text-left tw-px-4 tw-py-2 tw-text-sm",
+                "tw-text-gray-900 hover:tw-bg-gray-200",
+                "dark:tw-text-white dark:hover:tw-bg-gray-800"
+              )}
               onClick={() => handleModelChange(model.name)}
             >
               {model.displayName}

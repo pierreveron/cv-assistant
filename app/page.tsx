@@ -4,6 +4,7 @@ import ChatComponent from "./components/ChatComponent";
 import ModelSelector from "./components/ModelSelector";
 import { useChat } from "./providers/ChatProvider";
 import { useTheme } from "./providers/ThemeProvider";
+import classNames from "classnames";
 
 export default function Home() {
   const { resetChat } = useChat();
@@ -14,7 +15,11 @@ export default function Home() {
       <div className="tw-flex tw-justify-between tw-items-center tw-p-4">
         <button
           onClick={toggleTheme}
-          className="tw-p-2 tw-rounded-full hover:tw-bg-gray-50 tw-transition-colors tw-group"
+          className={classNames(
+            "tw-p-2 tw-rounded-full tw-transition-colors",
+            "tw-text-gray-900 hover:tw-bg-gray-200",
+            "dark:tw-text-white dark:hover:tw-bg-gray-800"
+          )}
           title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
         >
           {isDarkMode ? (
@@ -28,7 +33,7 @@ export default function Home() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="icon icon-tabler icons-tabler-outline icon-tabler-sun group-hover:tw-text-gray-900 tw-transition-colors"
+              className="icon icon-tabler icons-tabler-outline icon-tabler-sun"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
               <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
@@ -45,7 +50,7 @@ export default function Home() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="icon icon-tabler icons-tabler-outline icon-tabler-moon group-hover:tw-text-gray-900 tw-transition-colors"
+              className="icon icon-tabler icons-tabler-outline icon-tabler-moon"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
               <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
@@ -57,7 +62,11 @@ export default function Home() {
 
         <button
           onClick={resetChat}
-          className="tw-p-2 tw-rounded-full hover:tw-bg-gray-50 tw-transition-colors tw-group"
+          className={classNames(
+            "tw-p-2 tw-rounded-full tw-transition-colors",
+            "tw-text-gray-900 hover:tw-bg-gray-200",
+            "dark:tw-text-white dark:hover:tw-bg-gray-800"
+          )}
           title="Reset Chat"
         >
           <svg
@@ -70,7 +79,7 @@ export default function Home() {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="icon icon-tabler icons-tabler-outline icon-tabler-refresh group-hover:tw-text-gray-900 tw-transition-colors"
+            className="icon icon-tabler icons-tabler-outline icon-tabler-refresh"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />

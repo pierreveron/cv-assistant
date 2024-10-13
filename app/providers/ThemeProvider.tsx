@@ -24,7 +24,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     // Apply the theme to the document
-    document.documentElement.classList.toggle("dark", isDarkMode);
+    document.documentElement.classList.toggle("tw-dark", isDarkMode);
     localStorage.setItem("darkMode", isDarkMode.toString());
   }, [isDarkMode]);
 
