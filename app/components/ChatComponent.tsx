@@ -4,6 +4,7 @@ import MessageInput from "./MessageInput";
 import MessageBubble from "./MessageBubble";
 import Image from "next/image";
 import { useChat } from "../providers/ChatProvider";
+import Markdown from "react-markdown";
 
 export default function ChatComponent() {
   const { messages, isLoading, currentStreamedMessage, copyToClipboard } =
@@ -30,7 +31,9 @@ export default function ChatComponent() {
               />
             </div>
             <div className="tw-p-3 tw-rounded-2xl tw-bg-white tw-text-gray-800">
-              {currentStreamedMessage || (
+              {currentStreamedMessage ? (
+                <Markdown>{currentStreamedMessage}</Markdown>
+              ) : (
                 <span className="tw-animate-pulse">Thinking...</span>
               )}
             </div>

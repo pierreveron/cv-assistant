@@ -1,6 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import Image from "next/image";
+import Markdown from "react-markdown";
 
 interface MessageBubbleProps {
   message: {
@@ -40,7 +41,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
               : "tw-bg-white tw-text-gray-800"
           )}
         >
-          {message.text}
+          <Markdown>{message.text}</Markdown>
         </div>
         {message.sender === "bot" && (
           <button
