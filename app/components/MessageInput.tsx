@@ -52,7 +52,7 @@ export default function MessageInput() {
   return (
     <div
       className={classNames(
-        "tw-rounded-xl tw-border tw-border-border tw-p-2 tw-shadow-sm tw-flex tw-flex-row tw-items-end tw-gap-2",
+        "tw-rounded-xl tw-border tw-border-border tw-p-2 tw-shadow-sm tw-max-w-[80%] tw-w-full tw-mx-auto tw-flex tw-flex-row tw-items-end tw-gap-2",
         "tw-bg-white tw-border-gray-200",
         "dark:tw-bg-gray-800 dark:tw-border-gray-700"
       )}
