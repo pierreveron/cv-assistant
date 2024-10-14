@@ -121,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
   return (
     <div
       className={classNames(
-        "tw-w-64 tw-p-4 tw-border-r",
+        "tw-w-64 tw-p-4 tw-border-r tw-flex-shrink-0",
         "tw-bg-white tw-border-gray-200",
         "dark:tw-bg-gray-800 dark:tw-border-gray-700",
         "tw-transition-all tw-duration-300 tw-ease-in-out",
