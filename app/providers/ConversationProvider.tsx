@@ -10,16 +10,16 @@ import React, {
 import { Message } from "../utils/types";
 import { usePathname, useRouter } from "next/navigation";
 
-interface Conversation {
+interface ConversationMetadata {
   id: string;
   title: string;
 }
 
 interface ConversationContextType {
   currentConversationId: string | null;
-  conversations: Conversation[];
+  conversations: ConversationMetadata[];
   createConversation: () => void;
-  updateConversation: (id: string, updates: Partial<Conversation>) => void;
+  updateConversationTitle: (id: string, title: string) => void;
   deleteConversation: (id: string) => void;
   updateConversationMessages: (id: string, messages: Message[]) => void;
   getConversationMessages: (id: string) => Message[];
@@ -42,7 +42,9 @@ export const useConversation = () => {
 export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [conversations, setConversations] = useState<ConversationMetadata[]>(
+    []
+  );
   const router = useRouter();
   const pathname = usePathname();
   const [currentConversationId, setCurrentConversationId] = useState<
@@ -69,7 +71,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const createConversation = useCallback(() => {
     const newId = Date.now().toString();
-    const newConversation: Conversation = {
+    const newConversation: ConversationMetadata = {
       id: newId,
       title: "New chat",
     };
@@ -77,14 +79,11 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
     router.push(`/c/${newId}`);
   }, [router]);
 
-  const updateConversation = useCallback(
-    (id: string, updates: Partial<Conversation>) => {
-      setConversations((prev) =>
-        prev.map((conv) => (conv.id === id ? { ...conv, ...updates } : conv))
-      );
-    },
-    []
-  );
+  const updateConversationTitle = useCallback((id: string, title: string) => {
+    setConversations((prev) =>
+      prev.map((conv) => (conv.id === id ? { ...conv, title } : conv))
+    );
+  }, []);
 
   const deleteConversation = useCallback(
     (id: string) => {
@@ -118,7 +117,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
         currentConversationId,
         conversations,
         createConversation,
-        updateConversation,
+        updateConversationTitle,
         deleteConversation,
         updateConversationMessages,
         getConversationMessages,
