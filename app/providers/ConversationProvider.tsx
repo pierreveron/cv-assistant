@@ -78,7 +78,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
     setConversations((prev) => {
       const newConversation: ConversationMetadata = {
         id: newId,
-        title: "New chat " + (prev?.length || 0),
+        title: "New chat",
       };
       const newConversations = [...prev, newConversation];
       storeConversations(newConversations);

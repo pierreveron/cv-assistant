@@ -7,7 +7,9 @@ import React, {
   useEffect,
 } from "react";
 import { Message } from "../utils/types";
-import { InvalidApiKeyError, Model, streamResponse } from "../utils/mistralai";
+import { InvalidApiKeyError, Model } from "../utils/mistralai";
+import { generateConversationTitle } from "../utils/conversationTitleGeneration";
+import { streamBotMessage } from "../utils/botMessageGeneration";
 import { useApiKey } from "./ApiKeyProvider";
 import { useConversation } from "./ConversationProvider";
 
@@ -50,6 +52,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     updateConversationMessages,
     conversations,
     createConversation,
+    updateConversationTitle,
   } = useConversation();
 
   useEffect(() => {
@@ -86,7 +89,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
 
       try {
         abortControllerRef.current = new AbortController();
-        const stream = streamResponse([...messages, newUserMessage], {
+        const stream = streamBotMessage([...messages, newUserMessage], {
           apiKey: apiKey,
           abortSignal: abortControllerRef.current.signal,
           model: currentModel,
@@ -101,11 +104,19 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
           text: accumulatedMessage,
           sender: "bot",
         } as Message;
-        updateConversationMessages(conversationId, [
-          ...updatedMessages,
-          botMessage,
-        ]);
+        const finalMessages = [...updatedMessages, botMessage];
+        updateConversationMessages(conversationId, finalMessages);
         setMessages((prev) => [...prev, botMessage]);
+
+        // Update the conversation title after adding the new message
+        const title = await generateConversationTitle(finalMessages, {
+          apiKey,
+          model: currentModel,
+        });
+
+        if (title) {
+          updateConversationTitle(conversationId, title);
+        }
       } catch (error) {
         if (error instanceof InvalidApiKeyError) {
           alert(
@@ -136,6 +147,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       messages,
       updateConversationMessages,
       currentModel,
+      updateConversationTitle,
     ]
   );
 
