@@ -107,8 +107,9 @@ const ApiKeyInput: React.FC = () => {
         <button
           onClick={() => setApiKey(tempApiKey)}
           className={classNames(
-            "tw-inline-flex tw-items-center tw-px-3 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-r-md tw-text-white",
-            "tw-bg-orange-600 hover:tw-bg-orange-700 dark:tw-bg-orange-500 dark:hover:tw-bg-orange-600",
+            "tw-inline-flex tw-items-center tw-px-3 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-r-md ",
+            "tw-text-white tw-bg-orange-500 hover:tw-bg-orange-600",
+            "dark:tw-text-gray-50 dark:tw-bg-orange-400 dark:hover:tw-bg-orange-500",
             "focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-orange-500 dark:focus:tw-ring-orange-400",
             "disabled:tw-opacity-50 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-orange-600 dark:disabled:hover:tw-bg-orange-500"
           )}

@@ -45,7 +45,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           className={classNames(
             "tw-p-3 tw-rounded-lg",
             isUser
-              ? "tw-bg-orange-500 tw-text-white"
+              ? "tw-bg-orange-500 tw-text-white dark:tw-bg-orange-400 dark:tw-text-gray-50"
               : "tw-bg-gray-100 tw-text-gray-800 dark:tw-bg-gray-800 dark:tw-text-gray-200"
           )}
         >

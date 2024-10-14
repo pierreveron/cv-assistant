@@ -54,7 +54,7 @@ const Disclaimer = () => (
       href="https://www.linkedin.com/in/pierre-veron/"
       target="_blank"
       rel="noopener noreferrer"
-      className="tw-text-orange-500 hover:tw-underline"
+      className="tw-text-orange-500 hover:tw-underline dark:tw-text-orange-400"
     >
       Pierre Véron
     </a>{" "}
@@ -160,7 +160,9 @@ export default function MessageInput() {
         <button
           onClick={handleButtonClick}
           className={classNames(
-            "tw-p-2 tw-bg-orange-500 tw-text-white tw-rounded tw-hover:bg-orange-600",
+            "tw-p-2 tw-rounded",
+            "tw-text-white tw-bg-orange-500 hover:tw-bg-orange-600",
+            "dark:tw-text-gray-50 dark:tw-bg-orange-400 dark:hover:tw-bg-orange-500",
             "disabled:tw-opacity-50 disabled:tw-cursor-not-allowed"
           )}
           disabled={!isLoading && !inputMessage.trim()}
