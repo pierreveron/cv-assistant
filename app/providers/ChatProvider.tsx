@@ -45,6 +45,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addMessage = useCallback(
     async (message: string) => {
+      if (!apiKey) {
+        console.error("No API key found");
+        alert("Add an API key in the sidebar to start chatting.");
+        return;
+      }
       const newUserMessage = { text: message, sender: "user" } as Message;
       setMessages((prevMessages) => [...prevMessages, newUserMessage]);
       setIsLoading(true);
@@ -70,6 +75,13 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
           { text: accumulatedMessage, sender: "bot" },
         ]);
       } catch (error) {
+        if (error instanceof InvalidApiKeyError) {
+          alert(
+            "The API key you provided is invalid. Please update it in the sidebar and try again."
+          );
+        } else {
+          alert("An error occurred on the server side. Please try again.");
+        }
         console.error("Error generating bot response:", error);
         setMessages((prevMessages) => [
           ...prevMessages,
