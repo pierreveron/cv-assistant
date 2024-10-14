@@ -18,7 +18,7 @@ interface ConversationMetadata {
 interface ConversationContextType {
   currentConversationId: string | null;
   conversations: ConversationMetadata[];
-  createConversation: () => void;
+  createConversation: () => string;
   updateConversationTitle: (id: string, title: string) => void;
   deleteConversation: (id: string) => void;
   updateConversationMessages: (id: string, messages: Message[]) => void;
@@ -39,6 +39,15 @@ export const useConversation = () => {
   return context;
 };
 
+const storeConversations = (conversations: ConversationMetadata[]) => {
+  localStorage.setItem("conversations", JSON.stringify(conversations));
+};
+
+const loadConversations = (): ConversationMetadata[] => {
+  const conversations = localStorage.getItem("conversations");
+  return conversations ? JSON.parse(conversations) : [];
+};
+
 export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -52,10 +61,8 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
   >(null);
 
   useEffect(() => {
-    const savedConversations = localStorage.getItem("conversations");
-    if (savedConversations) {
-      setConversations(JSON.parse(savedConversations));
-    }
+    const savedConversations = loadConversations();
+    setConversations(savedConversations);
   }, []);
 
   useEffect(() => {
@@ -65,10 +72,6 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
     setCurrentConversationId(conversationId || null);
   }, [pathname]);
 
-  useEffect(() => {
-    localStorage.setItem("conversations", JSON.stringify(conversations));
-  }, [conversations]);
-
   const createConversation = useCallback(() => {
     const newId = Date.now().toString();
 
@@ -77,21 +80,31 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
         id: newId,
         title: "New chat " + (prev?.length || 0),
       };
-      return [...(prev || []), newConversation];
+      const newConversations = [...prev, newConversation];
+      storeConversations(newConversations);
+      return newConversations;
     });
 
     return newId;
-  }, [setConversations]);
+  }, []);
 
   const updateConversationTitle = useCallback((id: string, title: string) => {
-    setConversations((prev) =>
-      prev.map((conv) => (conv.id === id ? { ...conv, title } : conv))
-    );
+    setConversations((prev) => {
+      const newConversations = prev.map((conv) =>
+        conv.id === id ? { ...conv, title } : conv
+      );
+      storeConversations(newConversations);
+      return newConversations;
+    });
   }, []);
 
   const deleteConversation = useCallback(
     (id: string) => {
-      setConversations((prev) => prev.filter((conv) => conv.id !== id));
+      setConversations((prev) => {
+        const newConversations = prev.filter((conv) => conv.id !== id);
+        storeConversations(newConversations);
+        return newConversations;
+      });
       if (currentConversationId === id) {
         router.push("/");
       }
