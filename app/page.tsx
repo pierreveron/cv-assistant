@@ -41,7 +41,14 @@ export default function Home() {
             </svg>
           </button>
 
-          <Link href="/">
+          <Link
+            href="/"
+            className={classNames(
+              "tw-p-2 tw-rounded-full tw-transition-colors",
+              "tw-text-gray-900 hover:tw-bg-gray-200",
+              "dark:tw-text-white dark:hover:tw-bg-gray-800"
+            )}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
