@@ -1,5 +1,5 @@
 import { Message } from "./types";
-import { completeResponse, Model } from "./mistralai";
+import { completeResponse } from "./mistralai";
 
 const TITLE_SYSTEM_PROMPT = `You are a helpful AI assistant.
 Your task is to generate a short, concise title (maximum 5 words) that summarizes the main topic or theme of the given conversation.
@@ -25,10 +25,11 @@ export async function generateConversationTitle(
   messages: Message[],
   params: {
     apiKey: string;
-    model?: Model;
-    abortSignal?: AbortSignal;
   }
 ): Promise<string | null> {
-  const title = await completeResponse(formatTitlePrompt(messages), params);
+  const title = await completeResponse(formatTitlePrompt(messages), {
+    ...params,
+    model: "mistral-small-latest",
+  });
   return title ? title.trim() : null;
 }

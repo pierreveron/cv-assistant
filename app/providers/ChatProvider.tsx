@@ -111,7 +111,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         // Update the conversation title after adding the new message
         generateConversationTitle(finalMessages, {
           apiKey,
-          model: currentModel,
         }).then((title) => {
           if (title) {
             updateConversationTitle(conversationId, title);
