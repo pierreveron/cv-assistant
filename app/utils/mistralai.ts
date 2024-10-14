@@ -1,9 +1,6 @@
 import { Mistral } from "@mistralai/mistralai";
 import { Message } from "./types";
 
-const mistral = new Mistral({
-  apiKey: process.env.NEXT_PUBLIC_MISTRAL_API_KEY ?? "",
-});
 export type Model =
   | "mistral-large-latest"
   | "mistral-small-latest"
@@ -13,11 +10,16 @@ export type Model =
 
 export async function completeResponse(
   messages: Message[],
-  params?: {
+  params: {
+    apiKey: string;
     model?: Model;
     abortSignal?: AbortSignal;
   }
 ): Promise<string | null> {
+  const mistral = new Mistral({
+    apiKey: params.apiKey,
+  });
+
   const result = await mistral.chat.complete(
     {
       model: params?.model ?? "mistral-small-latest",
@@ -38,11 +40,16 @@ export async function completeResponse(
 
 export async function* streamResponse(
   messages: Message[],
-  params?: {
+  params: {
+    apiKey: string;
     model?: Model;
     abortSignal?: AbortSignal;
   }
 ): AsyncGenerator<string, void, unknown> {
+  const mistral = new Mistral({
+    apiKey: params.apiKey,
+  });
+
   const stream = await mistral.chat.stream(
     {
       model: params?.model ?? "mistral-small-latest",

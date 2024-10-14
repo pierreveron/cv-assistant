@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { Message } from "../utils/types";
 import { Model, streamResponse } from "../utils/mistralai";
+import { useApiKey } from "./ApiKeyProvider";
 
 interface ChatContextType {
   messages: Message[];
@@ -40,6 +41,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [currentModel, setCurrentModel] = useState<Model>(
     "mistral-small-latest"
   );
+  const { apiKey } = useApiKey();
 
   const addMessage = useCallback(
     async (message: string) => {
@@ -53,6 +55,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         abortControllerRef.current = new AbortController();
         const stream = streamResponse([...messages, newUserMessage], {
+          apiKey: apiKey,
           abortSignal: abortControllerRef.current.signal,
           model: currentModel,
         });
@@ -80,7 +83,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         setCurrentStreamedMessage("");
       }
     },
-    [messages, currentModel]
+    [messages, apiKey, currentModel]
   );
 
   const stopBotMessage = useCallback(() => {
