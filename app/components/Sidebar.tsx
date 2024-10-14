@@ -17,21 +17,26 @@ interface ConversationItemProps {
 const ConversationItem: React.FC<ConversationItemProps> = ({
   conversation,
 }) => {
-  const { deleteConversation } = useConversation();
+  const { deleteConversation, currentConversationId } = useConversation();
   return (
     <Link href={`/chat/${conversation.id}`}>
       <div
         className={classNames(
-          "tw-flex tw-justify-between tw-items-center tw-cursor-pointer tw-p-2 hover:tw-bg-gray-100 dark:hover:tw-bg-gray-700 tw-rounded"
-          // {
-          //   "tw-bg-gray-200 dark:tw-bg-gray-600":
-          //     currentConversationId === conversation.id,
-          // }
+          "tw-flex tw-justify-between tw-items-center tw-cursor-pointer tw-p-2 tw-rounded",
+          "tw-text-gray-800 hover:tw-bg-gray-200",
+          "dark:tw-text-gray-200 dark:hover:tw-bg-gray-700",
+          {
+            "tw-bg-gray-100 dark:tw-bg-gray-600":
+              currentConversationId === conversation.id,
+          }
         )}
       >
         <p className="tw-truncate">{conversation.title}</p>
         <button
-          className="tw-text-gray-500 hover:tw-text-red-500"
+          className={classNames(
+            "tw-text-gray-500 hover:tw-text-red-500",
+            "dark:tw-text-gray-400 dark:hover:tw-text-red-400"
+          )}
           onClick={(e) => {
             e.preventDefault();
             deleteConversation(conversation.id);
@@ -71,7 +76,13 @@ const ApiKeyInput: React.FC = () => {
   }, [apiKey]);
 
   return (
-    <div className="tw-mt-auto tw-pt-4 tw-px-4 tw-border-t tw-border-gray-200 dark:tw-border-gray-600 -tw-mx-4">
+    <div
+      className={classNames(
+        "tw-mt-auto tw-pt-4 tw-px-4 tw-border-t -tw-mx-4",
+        "tw-transition-colors tw-duration-300",
+        "tw-border-gray-200 dark:tw-border-gray-700"
+      )}
+    >
       <label
         htmlFor="apiKey"
         className="tw-block tw-text-sm tw-font-medium tw-text-gray-700 dark:tw-text-gray-300"
@@ -88,17 +99,18 @@ const ApiKeyInput: React.FC = () => {
           className={classNames(
             "tw-block tw-px-2 tw-py-1 tw-w-full tw-border-y tw-border-l tw-rounded-l-md focus:tw-outline-none tw-text-sm",
             "tw-text-gray-900 tw-bg-white tw-border-gray-300",
-            "dark:tw-text-white dark:tw-bg-gray-700 dark:tw-border-gray-600",
-            "focus:tw-ring-orange-500 focus:tw-border-orange-500"
+            "dark:tw-text-gray-100 dark:tw-bg-gray-800 dark:tw-border-gray-700",
+            "focus:tw-ring-orange-500 focus:tw-border-orange-500 dark:focus:tw-ring-orange-400 dark:focus:tw-border-orange-400"
           )}
           placeholder="Enter your key"
         />
         <button
           onClick={() => setApiKey(tempApiKey)}
           className={classNames(
-            "tw-inline-flex tw-items-center tw-px-3 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-r-md tw-shadow-sm tw-text-white",
-            "tw-bg-orange-600 hover:tw-bg-orange-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-orange-500",
-            "disabled:tw-opacity-50 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-orange-600"
+            "tw-inline-flex tw-items-center tw-px-3 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-leading-4 tw-font-medium tw-rounded-r-md tw-text-white",
+            "tw-bg-orange-600 hover:tw-bg-orange-700 dark:tw-bg-orange-500 dark:hover:tw-bg-orange-600",
+            "focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-orange-500 dark:focus:tw-ring-orange-400",
+            "disabled:tw-opacity-50 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-orange-600 dark:disabled:hover:tw-bg-orange-500"
           )}
           disabled={!tempApiKey || tempApiKey === apiKey}
           title={
@@ -121,16 +133,16 @@ const Sidebar: React.FC = () => {
   return (
     <div
       className={classNames(
+        isSidebarOpen ? "tw-block" : "tw-hidden",
         "tw-w-64 tw-p-4 tw-border-r tw-flex-shrink-0",
-        "tw-bg-white tw-border-gray-200",
-        "dark:tw-bg-gray-800 dark:tw-border-gray-700",
-        "tw-transition-all tw-duration-300 tw-ease-in-out",
         "tw-flex tw-flex-col tw-h-full",
-        isSidebarOpen ? "tw-block" : "tw-hidden"
+        "tw-transition-colors tw-duration-300",
+        "tw-bg-white tw-border-gray-200 tw-text-gray-900",
+        "dark:tw-bg-gray-950 dark:tw-border-gray-700 dark:tw-text-gray-200"
       )}
     >
-      <h2 className="text-lg font-semibold mb-4">Conversations</h2>
-      <div className="space-y-2 tw-flex-grow tw-overflow-y-auto">
+      <h2 className="tw-text-lg tw-font-semibold tw-mb-4">Conversations</h2>
+      <div className="tw-flex tw-flex-col tw-gap-y-1 tw-flex-grow tw-overflow-y-auto">
         {conversations.map((conversation) => (
           <ConversationItem key={conversation.id} conversation={conversation} />
         ))}

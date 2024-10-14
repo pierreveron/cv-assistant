@@ -22,7 +22,7 @@ const PlaceholderQuestions = ({
           key={index}
           onClick={() => onQuestionClick(question)}
           className={classNames(
-            "tw-bg-gray-100 tw-text-gray-700 tw-px-4 tw-py-3 tw-rounded-lg tw-text-sm tw-cursor-pointer tw-transition-colors tw-duration-200",
+            "tw-bg-gray-100 tw-text-gray-700 tw-px-4 tw-py-3 tw-rounded-lg tw-text-sm tw-cursor-pointer",
             "hover:tw-bg-gray-200",
             "dark:tw-bg-gray-700 dark:tw-text-gray-300 dark:hover:tw-bg-gray-600"
           )}
@@ -116,7 +116,7 @@ export default function MessageInput() {
 
       <div
         className={classNames(
-          "tw-rounded-xl tw-border tw-border-border tw-p-2 tw-shadow-sm tw-w-full tw-flex tw-flex-row tw-items-end tw-gap-2",
+          "tw-rounded-xl tw-border tw-border-border tw-p-2 tw-w-full tw-flex tw-flex-row tw-items-end tw-gap-2",
           "tw-bg-white tw-border-gray-200",
           "dark:tw-bg-gray-800 dark:tw-border-gray-700"
         )}
@@ -137,7 +137,7 @@ export default function MessageInput() {
         <button
           onClick={handleButtonClick}
           className={classNames(
-            "tw-p-2 tw-bg-orange-500 tw-text-white tw-rounded tw-hover:bg-orange-600 tw-transition-colors tw-duration-200",
+            "tw-p-2 tw-bg-orange-500 tw-text-white tw-rounded tw-hover:bg-orange-600",
             "disabled:tw-opacity-50 disabled:tw-cursor-not-allowed"
           )}
           disabled={!isLoading && !inputMessage.trim()}

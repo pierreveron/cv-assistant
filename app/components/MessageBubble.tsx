@@ -28,8 +28,8 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         <div
           className={classNames(
             "tw-inline-flex tw-h-7 tw-w-7 tw-shrink-0 tw-items-center tw-justify-center -tw-ml-3.5 tw-rounded-full",
-            "tw-bg-gray-100 dark:tw-bg-gray-800",
-            "tw-text-gray-500 dark:tw-text-gray-400"
+            "tw-text-gray-500 tw-bg-gray-100",
+            "dark:tw-text-gray-400 dark:tw-bg-gray-800"
           )}
         >
           <Image
@@ -46,7 +46,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
             "tw-p-3 tw-rounded-lg",
             isUser
               ? "tw-bg-orange-500 tw-text-white"
-              : "tw-bg-white tw-text-gray-800 dark:tw-bg-gray-700 dark:tw-text-gray-200"
+              : "tw-bg-gray-100 tw-text-gray-800 dark:tw-bg-gray-800 dark:tw-text-gray-200"
           )}
         >
           <Markdown>{message.text}</Markdown>
@@ -55,7 +55,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           <button
             onClick={() => copyToClipboard(message.text)}
             className={classNames(
-              "tw-p-1 tw-rounded tw-transition-colors",
+              "tw-p-1 tw-rounded",
               "hover:tw-bg-gray-200 dark:hover:tw-bg-gray-600",
               "tw-text-gray-500 dark:tw-text-gray-400"
             )}

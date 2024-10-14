@@ -31,7 +31,7 @@ export default function RootLayout({
       <body
         className={classNames(
           `${geistSans.variable} ${geistMono.variable} antialiased`,
-          "tw-bg-white dark:tw-bg-gray-950"
+          "tw-bg-white dark:tw-bg-gray-950 tw-transition-colors tw-duration-300"
         )}
       >
         <AppProvider>

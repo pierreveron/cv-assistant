@@ -51,7 +51,7 @@ const ModelSelector: React.FC = () => {
       <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         className={classNames(
-          "tw-text-2xl tw-font-bold tw-cursor-pointer tw-flex tw-items-center tw-px-3 tw-py-1 tw-rounded-md tw-transition-colors",
+          "tw-text-2xl tw-font-bold tw-cursor-pointer tw-flex tw-items-center tw-px-3 tw-py-1 tw-rounded-md",
           "tw-text-gray-900 hover:tw-bg-gray-200",
           "dark:tw-text-white dark:hover:tw-bg-gray-800"
         )}
