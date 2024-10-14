@@ -4,10 +4,13 @@ import React, {
   useState,
   useCallback,
   useRef,
+  useEffect,
 } from "react";
 import { Message } from "../utils/types";
-import { Model, streamResponse } from "../utils/mistralai";
+import { InvalidApiKeyError, Model, streamResponse } from "../utils/mistralai";
 import { useApiKey } from "./ApiKeyProvider";
+import { useConversation } from "./ConversationProvider";
+import { usePathname } from "next/navigation";
 
 interface ChatContextType {
   messages: Message[];
@@ -42,6 +45,35 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     "mistral-small-latest"
   );
   const { apiKey } = useApiKey();
+  const { getConversationMessages, updateConversationMessages, conversations } =
+    useConversation();
+
+  const pathname = usePathname();
+
+  const [currentConversationId, setCurrentConversationId] = useState<
+    string | null
+  >(null);
+
+  useEffect(() => {
+    // Get the conversation ID from the URL path
+    const pathParts = pathname.split("/");
+    const conversationId = pathParts[pathParts.length - 1];
+    setCurrentConversationId(conversationId || null);
+  }, [pathname, conversations, getConversationMessages]);
+
+  useEffect(() => {
+    if (
+      currentConversationId &&
+      conversations.some((conv) => conv.id === currentConversationId)
+    ) {
+      const conversationMessages = getConversationMessages(
+        currentConversationId
+      );
+      setMessages(conversationMessages);
+    } else {
+      setMessages([]);
+    }
+  }, [conversations, currentConversationId, getConversationMessages]);
 
   const addMessage = useCallback(
     async (message: string) => {
@@ -51,7 +83,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
       const newUserMessage = { text: message, sender: "user" } as Message;
+      const conversationId = currentConversationId || Date.now().toString();
+      const updatedMessages = [...messages, newUserMessage];
+      updateConversationMessages(conversationId, updatedMessages);
       setMessages((prevMessages) => [...prevMessages, newUserMessage]);
+
       setIsLoading(true);
 
       setCurrentStreamedMessage("");
@@ -70,10 +106,15 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
           setCurrentStreamedMessage(accumulatedMessage);
         }
 
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { text: accumulatedMessage, sender: "bot" },
+        const botMessage = {
+          text: accumulatedMessage,
+          sender: "bot",
+        } as Message;
+        updateConversationMessages(conversationId, [
+          ...updatedMessages,
+          botMessage,
         ]);
+        setMessages((prev) => [...prev, botMessage]);
       } catch (error) {
         if (error instanceof InvalidApiKeyError) {
           alert(
@@ -83,19 +124,27 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
           alert("An error occurred on the server side. Please try again.");
         }
         console.error("Error generating bot response:", error);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            text: "An error occurred on the server side. Please try again.",
-            sender: "bot",
-          },
+        const errorMessage = {
+          text: "An error occurred on the server side. Please try again.",
+          sender: "bot",
+        } as Message;
+        updateConversationMessages(conversationId, [
+          ...updatedMessages,
+          errorMessage,
         ]);
+        setMessages((prev) => [...prev, errorMessage]);
       } finally {
         setIsLoading(false);
         setCurrentStreamedMessage("");
       }
     },
-    [messages, apiKey, currentModel]
+    [
+      updateConversationMessages,
+      apiKey,
+      currentModel,
+      messages,
+      currentConversationId,
+    ]
   );
 
   const stopBotMessage = useCallback(() => {

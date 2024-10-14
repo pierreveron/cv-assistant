@@ -2,6 +2,7 @@
 import React from "react";
 import { ChatProvider } from "./ChatProvider";
 import { ThemeProvider } from "./ThemeProvider";
+import { ConversationProvider } from "./ConversationProvider";
 import { ApiKeyProvider } from "./ApiKeyProvider";
 
 export default function AppProvider({
@@ -11,9 +12,11 @@ export default function AppProvider({
 }) {
   return (
     <ApiKeyProvider>
-      <ChatProvider>
-        <ThemeProvider>{children}</ThemeProvider>
-      </ChatProvider>
+      <ConversationProvider>
+        <ChatProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </ChatProvider>
+      </ConversationProvider>
     </ApiKeyProvider>
   );
 }
