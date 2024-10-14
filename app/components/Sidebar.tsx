@@ -98,7 +98,7 @@ const ApiKeyInput: React.FC = () => {
           onChange={(e) => setTempApiKey(e.target.value)}
           className={classNames(
             "tw-block tw-px-2 tw-py-1 tw-w-full tw-border-y tw-border-l tw-rounded-l-md focus:tw-outline-none tw-text-sm",
-            "tw-text-gray-900 tw-bg-white tw-border-gray-300",
+            "tw-text-gray-900 tw-bg-white tw-border-gray-200",
             "dark:tw-text-gray-100 dark:tw-bg-gray-800 dark:tw-border-gray-700",
             "focus:tw-ring-orange-500 focus:tw-border-orange-500 dark:focus:tw-ring-orange-400 dark:focus:tw-border-orange-400"
           )}
