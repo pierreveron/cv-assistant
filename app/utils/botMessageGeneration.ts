@@ -15,7 +15,7 @@ Key points about Pierre Véron:
 - Thrives in international environments and enjoys collaborating with diverse teams
 - Fluent in English, French, and notions of German
 
-Github: https://github.com/pierre-veron
+Github: https://github.com/pierreveron
 LinkedIn: https://www.linkedin.com/in/pierre-veron/
 `;
 
