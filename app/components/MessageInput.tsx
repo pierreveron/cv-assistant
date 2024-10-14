@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import classNames from "classnames";
 import { useChat } from "../providers/ChatProvider";
 
@@ -55,9 +55,13 @@ export default function MessageInput() {
   const [inputMessage, setInputMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const resetTextareaHeight = () => {
+  const adjustTextareaHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
+      const newHeight = Math.min(textareaRef.current.scrollHeight, 160); // 160px is 10em assuming 16px font-size
+      textareaRef.current.style.height = `${newHeight}px`;
+      textareaRef.current.style.overflowY =
+        newHeight === 160 ? "auto" : "hidden";
     }
   };
 
@@ -65,7 +69,7 @@ export default function MessageInput() {
     if (inputMessage.trim()) {
       addMessage(inputMessage.trim());
       setInputMessage("");
-      resetTextareaHeight();
+      adjustTextareaHeight();
     }
   };
 
@@ -82,17 +86,15 @@ export default function MessageInput() {
       e.preventDefault();
       if (!isLoading) {
         handleSendMessage();
-        resetTextareaHeight();
+        adjustTextareaHeight();
       }
     }
   };
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      const scrollHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.style.height = scrollHeight + "px";
-    }
-  }, [inputMessage]);
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputMessage(e.target.value);
+    adjustTextareaHeight();
+  };
 
   const handleQuestionClick = (question: string) => {
     addMessage(question);
@@ -122,10 +124,10 @@ export default function MessageInput() {
         <textarea
           ref={textareaRef}
           value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
+          onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           className={classNames(
-            "tw-bg-inherit tw-flex-grow tw-p-2 tw-resize-none tw-overflow-scroll tw-min-h-0 tw-max-h-[10em] focus:tw-outline-none",
+            "tw-bg-inherit tw-flex-grow tw-resize-none tw-p-2 tw-max-h-[10em] focus:tw-outline-none",
             "tw-text-gray-900",
             "dark:tw-text-white"
           )}
