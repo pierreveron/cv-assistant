@@ -3,11 +3,14 @@
 import React, { useState, useRef } from "react";
 import classNames from "classnames";
 import { useChat } from "../providers/ChatProvider";
+import { useApiKey } from "../providers/ApiKeyProvider";
 
 const PlaceholderQuestions = ({
   onQuestionClick,
+  disabled,
 }: {
   onQuestionClick: (question: string) => void;
+  disabled: boolean;
 }) => {
   const placeholderQuestions = [
     "Why is Pierre a great fit for Mistral?",
@@ -20,12 +23,22 @@ const PlaceholderQuestions = ({
       {placeholderQuestions.map((question, index) => (
         <div
           key={index}
-          onClick={() => onQuestionClick(question)}
+          onClick={() => {
+            if (!disabled) {
+              onQuestionClick(question);
+            }
+          }}
           className={classNames(
             "tw-bg-gray-100 tw-text-gray-700 tw-px-4 tw-py-3 tw-rounded-lg tw-text-sm tw-cursor-pointer",
             "hover:tw-bg-gray-200",
-            "dark:tw-bg-gray-700 dark:tw-text-gray-300 dark:hover:tw-bg-gray-600"
+            "dark:tw-bg-gray-700 dark:tw-text-gray-300 dark:hover:tw-bg-gray-600",
+            disabled && "tw-opacity-50 tw-cursor-not-allowed"
           )}
+          title={
+            disabled
+              ? "Please set your API key to start chatting"
+              : "Click to ask a question"
+          }
         >
           {question}
         </div>
@@ -51,6 +64,7 @@ const Disclaimer = () => (
 
 export default function MessageInput() {
   const { isLoading, addMessage, stopBotMessage, messages } = useChat();
+  const { apiKey } = useApiKey();
 
   const [inputMessage, setInputMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -110,7 +124,10 @@ export default function MessageInput() {
           <p className="tw-text-sm tw-text-gray-600 dark:tw-text-gray-400 tw-mb-4 tw-text-center">
             Ask me anything about Pierre&apos;s skills and experience!
           </p>
-          <PlaceholderQuestions onQuestionClick={handleQuestionClick} />
+          <PlaceholderQuestions
+            onQuestionClick={handleQuestionClick}
+            disabled={!apiKey}
+          />
         </>
       )}
 
@@ -129,10 +146,16 @@ export default function MessageInput() {
           className={classNames(
             "tw-bg-inherit tw-flex-grow tw-resize-none tw-p-2 tw-max-h-[10em] focus:tw-outline-none",
             "tw-text-gray-900",
-            "dark:tw-text-white"
+            "dark:tw-text-white",
+            "disabled:tw-cursor-not-allowed"
           )}
-          placeholder="How can Mistral help you today?"
+          placeholder={
+            apiKey
+              ? "How can Mistral help you today?"
+              : "Please set your API key in the sidebar to start chatting"
+          }
           rows={1}
+          disabled={!apiKey}
         />
         <button
           onClick={handleButtonClick}

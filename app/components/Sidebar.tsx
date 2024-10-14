@@ -112,11 +112,9 @@ const ApiKeyInput: React.FC = () => {
             "focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-orange-500 dark:focus:tw-ring-orange-400",
             "disabled:tw-opacity-50 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-orange-600 dark:disabled:hover:tw-bg-orange-500"
           )}
-          disabled={!tempApiKey || tempApiKey === apiKey}
+          disabled={tempApiKey === apiKey}
           title={
-            !tempApiKey || tempApiKey === apiKey
-              ? "API key is already set"
-              : "Save API key"
+            tempApiKey === apiKey ? "API key is already set" : "Save API key"
           }
         >
           Save
