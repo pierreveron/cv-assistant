@@ -104,7 +104,7 @@ export default function MessageInput() {
     <div className="tw-flex tw-flex-col tw-items-center tw-w-full tw-max-w-[80%] tw-mx-auto">
       {messages.length === 0 && (
         <>
-          <h2 className="tw-text-xl tw-font-semibold tw-mb-2 tw-text-center">
+          <h2 className="tw-text-xl tw-font-semibold tw-mb-2 tw-text-center tw-text-gray-800 dark:tw-text-gray-200">
             Welcome to Pierre Véron&apos;s CV Assistant
           </h2>
           <p className="tw-text-sm tw-text-gray-600 dark:tw-text-gray-400 tw-mb-4 tw-text-center">
