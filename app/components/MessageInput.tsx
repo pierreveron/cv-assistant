@@ -146,7 +146,7 @@ export default function MessageInput() {
           className={classNames(
             "tw-bg-inherit tw-flex-grow tw-resize-none tw-p-2 tw-max-h-[10em] focus:tw-outline-none",
             "tw-text-gray-900",
-            "dark:tw-text-white",
+            "dark:tw-text-gray-200",
             "disabled:tw-cursor-not-allowed"
           )}
           placeholder={

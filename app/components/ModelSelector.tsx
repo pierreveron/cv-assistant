@@ -53,7 +53,7 @@ const ModelSelector: React.FC = () => {
         className={classNames(
           "tw-text-2xl tw-font-bold tw-cursor-pointer tw-flex tw-items-center tw-px-3 tw-py-1 tw-rounded-md",
           "tw-text-gray-900 hover:tw-bg-gray-100",
-          "dark:tw-text-white dark:hover:tw-bg-gray-800"
+          "dark:tw-text-gray-200 dark:hover:tw-bg-gray-800"
         )}
       >
         {models.find((m) => m.name === currentModel)?.displayName}
@@ -86,7 +86,7 @@ const ModelSelector: React.FC = () => {
               className={classNames(
                 "tw-block tw-w-full tw-text-left tw-px-4 tw-py-2 tw-text-sm",
                 "tw-text-gray-900 hover:tw-bg-gray-100",
-                "dark:tw-text-white dark:hover:tw-bg-gray-800"
+                "dark:tw-text-gray-200 dark:hover:tw-bg-gray-800"
               )}
               onClick={() => handleModelChange(model.name)}
             >

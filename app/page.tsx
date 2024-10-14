@@ -19,7 +19,7 @@ export default function Home() {
             className={classNames(
               "tw-p-2 tw-rounded-full",
               "tw-text-gray-900 hover:tw-bg-gray-100",
-              "dark:tw-text-white dark:hover:tw-bg-gray-800"
+              "dark:tw-text-gray-200 dark:hover:tw-bg-gray-800"
             )}
             onClick={() => setSidebarOpen((v) => !v)}
           >
@@ -46,7 +46,7 @@ export default function Home() {
             className={classNames(
               "tw-p-2 tw-rounded-full",
               "tw-text-gray-900 hover:tw-bg-gray-100",
-              "dark:tw-text-white dark:hover:tw-bg-gray-800"
+              "dark:tw-text-gray-200 dark:hover:tw-bg-gray-800"
             )}
           >
             <svg
@@ -76,7 +76,7 @@ export default function Home() {
           className={classNames(
             "tw-p-2 tw-rounded-full",
             "tw-text-gray-900 hover:tw-bg-gray-100",
-            "dark:tw-text-white dark:hover:tw-bg-gray-800"
+            "dark:tw-text-gray-200 dark:hover:tw-bg-gray-800"
           )}
           title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
         >
