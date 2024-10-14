@@ -1,137 +1,79 @@
 "use client";
 
-import { useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import MessageInput from "./MessageInput";
+import MessageBubble from "./MessageBubble";
+import Image from "next/image";
+import { useChat } from "../providers/ChatProvider";
+import Markdown from "react-markdown";
 import classNames from "classnames";
-import { Message } from "../utils/types";
-import { streamResponse } from "../utils/mistralai";
 
 export default function ChatComponent() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentStreamedMessage, setCurrentStreamedMessage] = useState("");
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const { messages, isLoading, currentStreamedMessage, copyToClipboard } =
+    useChat();
+  const messageContainerRef = useRef<HTMLDivElement>(null);
 
-  const addMessage = async (message: string) => {
-    const newUserMessage = { text: message, sender: "user" } as Message;
-    setMessages((prevMessages) => [...prevMessages, newUserMessage]);
-    setIsLoading(true);
-
-    setCurrentStreamedMessage("");
-    let accumulatedMessage = "";
-
-    try {
-      abortControllerRef.current = new AbortController();
-      const stream = streamResponse([...messages, newUserMessage], {
-        abortSignal: abortControllerRef.current.signal,
-      });
-
-      for await (const chunk of stream) {
-        accumulatedMessage += chunk;
-        setCurrentStreamedMessage(accumulatedMessage);
-      }
-
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: accumulatedMessage, sender: "bot" },
-      ]);
-    } catch (error) {
-      console.error("Error generating bot response:", error);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          text: "An error occurred on the server side. Please try again.",
-          sender: "bot",
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-      setCurrentStreamedMessage("");
+  const scrollToBottom = () => {
+    if (messageContainerRef.current) {
+      const lastChild = messageContainerRef.current.lastElementChild;
+      lastChild?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const stopBotMessage = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-      setIsLoading(false);
-    }
-  };
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(
-      () => {
-        console.log("Text copied to clipboard");
-      },
-      (err) => {
-        console.error("Could not copy text: ", err);
-      }
-    );
-  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, currentStreamedMessage]);
 
   return (
-    <div className="tw-flex tw-flex-col tw-h-full tw-w-full tw-max-w-[80%] tw-mx-auto tw-mb-4">
-      <div className="tw-flex-1 tw-overflow-y-auto tw-p-4 tw-space-y-4">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={classNames(
-              "tw-flex",
-              message.sender === "user" ? "tw-justify-end" : "tw-justify-start"
-            )}
-          >
-            <div className="tw-flex tw-items-end tw-gap-2 tw-max-w-[80%]">
+    <div className="tw-flex tw-flex-col tw-h-full tw-w-full tw-pb-4">
+      <div className="tw-flex-1 tw-overflow-y-auto tw-py-4 tw-space-y-4 tw-w-full">
+        <div
+          ref={messageContainerRef}
+          className="tw-max-w-[80%] tw-mx-auto tw-space-y-4"
+        >
+          {messages.map((message, index) => (
+            <MessageBubble
+              key={index}
+              message={message}
+              copyToClipboard={copyToClipboard}
+            />
+          ))}
+          {isLoading && (
+            <div className="tw-flex tw-justify-start tw-gap-x-2">
               <div
                 className={classNames(
-                  "tw-p-3 tw-rounded-2xl",
-                  message.sender === "user"
-                    ? "tw-bg-gray-400 tw-text-white"
-                    : "tw-bg-white tw-text-gray-800"
+                  "tw-inline-flex tw-h-7 tw-w-7 tw-shrink-0 tw-items-center tw-justify-center -tw-ml-3.5 tw-rounded-full",
+                  "tw-bg-gray-100 dark:tw-bg-gray-800",
+                  "tw-text-gray-500 dark:tw-text-gray-400"
                 )}
               >
-                {message.text}
+                <Image
+                  src="/logo-mistral.png"
+                  alt="Mistral AI Logo"
+                  width={24}
+                  height={24}
+                />
               </div>
-              {message.sender === "bot" && (
-                <button
-                  onClick={() => copyToClipboard(message.text)}
-                  className="tw-p-1 tw-rounded hover:tw-bg-gray-200 tw-transition-colors"
-                  title="Copy message"
+
+              <div className="tw-flex tw-items-end tw-gap-2 tw-max-w-[80%]">
+                <div
+                  className={classNames(
+                    "tw-p-3 tw-rounded-lg",
+                    "tw-bg-white tw-text-gray-800 dark:tw-bg-gray-700 dark:tw-text-gray-200"
+                  )}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="icon icon-tabler icons-tabler-outline icon-tabler-copy"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
-                    <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
-                  </svg>
-                </button>
-              )}
+                  {currentStreamedMessage ? (
+                    <Markdown>{currentStreamedMessage}</Markdown>
+                  ) : (
+                    <span className="tw-animate-pulse">Thinking...</span>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
-        {isLoading && (
-          <div className="tw-flex tw-justify-start tw-max-w-[80%]">
-            <div className="tw-p-3 tw-rounded-2xl tw-bg-white tw-text-gray-800">
-              {currentStreamedMessage || (
-                <span className="tw-animate-pulse">Thinking...</span>
-              )}
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-      <MessageInput
-        addMessage={addMessage}
-        isLoading={isLoading}
-        stopBotMessage={stopBotMessage}
-      />
+      <MessageInput />
     </div>
   );
 }

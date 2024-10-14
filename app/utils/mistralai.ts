@@ -1,24 +1,39 @@
 import { Mistral } from "@mistralai/mistralai";
-import { Message } from "./types";
+import { SDKError } from "@mistralai/mistralai/models/errors";
 
-const mistral = new Mistral({
-  apiKey: process.env.NEXT_PUBLIC_MISTRAL_API_KEY ?? "",
-});
+export type Model =
+  | "mistral-large-latest"
+  | "mistral-small-latest"
+  | "codestral-latest"
+  | "pixtral-12b-2409"
+  | "open-mistral-nemo";
+
+export class InvalidApiKeyError extends Error {
+  constructor(message: string = "Invalid API key") {
+    super(message);
+    this.name = "InvalidApiKeyError";
+  }
+}
 
 export async function completeResponse(
-  messages: Message[],
-  params?: {
-    model?: string;
+  messages: {
+    role: "system" | "user" | "assistant" | "tool";
+    content: string;
+  }[],
+  params: {
+    apiKey: string;
+    model?: Model;
     abortSignal?: AbortSignal;
   }
 ): Promise<string | null> {
+  const mistral = new Mistral({
+    apiKey: params.apiKey,
+  });
+
   const result = await mistral.chat.complete(
     {
       model: params?.model ?? "mistral-small-latest",
-      messages: messages.map((message) => ({
-        content: message.text,
-        role: message.sender === "user" ? "user" : "assistant",
-      })),
+      messages,
     },
     {
       fetchOptions: {
@@ -31,33 +46,54 @@ export async function completeResponse(
 }
 
 export async function* streamResponse(
-  messages: Message[],
-  params?: {
-    model?: string;
+  messages: {
+    role: "system" | "user" | "assistant" | "tool";
+    content: string;
+  }[],
+  params: {
+    apiKey: string;
+    model?: Model;
     abortSignal?: AbortSignal;
   }
 ): AsyncGenerator<string, void, unknown> {
-  const stream = await mistral.chat.stream(
-    {
-      model: params?.model ?? "mistral-small-latest",
-      messages: messages.map((message) => ({
-        content: message.text,
-        role: message.sender === "user" ? "user" : "assistant",
-      })),
-    },
-    {
-      fetchOptions: {
-        signal: params?.abortSignal,
+  const mistral = new Mistral({
+    apiKey: params.apiKey,
+  });
+
+  try {
+    const stream = await mistral.chat.stream(
+      {
+        model: params?.model ?? "mistral-small-latest",
+        messages,
       },
+      {
+        fetchOptions: {
+          signal: params?.abortSignal,
+        },
+      }
+    );
+
+    for await (const event of stream) {
+      if (event.data.choices[0]?.delta?.content) {
+        yield event.data.choices[0].delta.content;
+      }
     }
-  );
-
-  for await (const event of stream) {
-    // Handle the event
-    console.log(event);
-
-    if (event.data.choices[0]?.delta?.content) {
-      yield event.data.choices[0].delta.content;
+  } catch (err) {
+    switch (true) {
+      case err instanceof SDKError: {
+        console.error(err.message);
+        if (err.statusCode === 401) {
+          throw new InvalidApiKeyError();
+        }
+        throw err;
+      }
+      case err instanceof Error && err.name === "AbortError": {
+        console.log("Request was aborted");
+        return; // Gracefully exit the generator
+      }
+      default: {
+        throw err;
+      }
     }
   }
 }
