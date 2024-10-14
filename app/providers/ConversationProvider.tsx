@@ -71,13 +71,17 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const createConversation = useCallback(() => {
     const newId = Date.now().toString();
-    const newConversation: ConversationMetadata = {
-      id: newId,
-      title: "New chat",
-    };
-    setConversations((prev) => [...prev, newConversation]);
-    router.push(`/c/${newId}`);
-  }, [router]);
+
+    setConversations((prev) => {
+      const newConversation: ConversationMetadata = {
+        id: newId,
+        title: "New chat " + (prev?.length || 0),
+      };
+      return [...(prev || []), newConversation];
+    });
+
+    return newId;
+  }, [setConversations]);
 
   const updateConversationTitle = useCallback((id: string, title: string) => {
     setConversations((prev) =>

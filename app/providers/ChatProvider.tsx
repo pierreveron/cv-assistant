@@ -49,6 +49,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     getConversationMessages,
     updateConversationMessages,
     conversations,
+    createConversation,
   } = useConversation();
 
   useEffect(() => {
@@ -73,7 +74,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
       const newUserMessage = { text: message, sender: "user" } as Message;
-      const conversationId = currentConversationId || Date.now().toString();
+      const conversationId = currentConversationId || createConversation();
       const updatedMessages = [...messages, newUserMessage];
       updateConversationMessages(conversationId, updatedMessages);
       setMessages((prevMessages) => [...prevMessages, newUserMessage]);
@@ -129,11 +130,12 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     },
     [
-      updateConversationMessages,
       apiKey,
-      currentModel,
-      messages,
       currentConversationId,
+      createConversation,
+      messages,
+      updateConversationMessages,
+      currentModel,
     ]
   );
 
