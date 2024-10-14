@@ -15,15 +15,23 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   message,
   copyToClipboard,
 }) => {
+  const isUser = message.sender === "user";
+
   return (
     <div
       className={classNames(
-        "tw-flex",
-        message.sender === "user" ? "tw-justify-end" : "tw-justify-start"
+        "tw-flex tw-gap-x-2",
+        isUser ? "tw-justify-end" : "tw-justify-start"
       )}
     >
-      {message.sender === "bot" && (
-        <div className="tw-inline-flex tw-h-7 tw-w-7 tw-shrink-0 tw-items-center tw-justify-center -ml-3.5 tw-bg-background">
+      {!isUser && (
+        <div
+          className={classNames(
+            "tw-inline-flex tw-h-7 tw-w-7 tw-shrink-0 tw-items-center tw-justify-center -tw-ml-3.5 tw-rounded-full",
+            "tw-bg-gray-100 dark:tw-bg-gray-800",
+            "tw-text-gray-500 dark:tw-text-gray-400"
+          )}
+        >
           <Image
             src="/logo-mistral.png"
             alt="Mistral AI Logo"
@@ -35,18 +43,22 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
       <div className="tw-flex tw-items-end tw-gap-2 tw-max-w-[80%]">
         <div
           className={classNames(
-            "tw-p-3 tw-rounded-2xl",
-            message.sender === "user"
-              ? "tw-bg-gray-400 tw-text-white"
-              : "tw-bg-white tw-text-gray-800"
+            "tw-p-3 tw-rounded-lg",
+            isUser
+              ? "tw-bg-orange-500 tw-text-white"
+              : "tw-bg-white tw-text-gray-800 dark:tw-bg-gray-700 dark:tw-text-gray-200"
           )}
         >
           <Markdown>{message.text}</Markdown>
         </div>
-        {message.sender === "bot" && (
+        {!isUser && (
           <button
             onClick={() => copyToClipboard(message.text)}
-            className="tw-p-1 tw-rounded hover:tw-bg-gray-200 tw-transition-colors"
+            className={classNames(
+              "tw-p-1 tw-rounded tw-transition-colors",
+              "hover:tw-bg-gray-200 dark:hover:tw-bg-gray-600",
+              "tw-text-gray-500 dark:tw-text-gray-400"
+            )}
             title="Copy message"
           >
             <svg
