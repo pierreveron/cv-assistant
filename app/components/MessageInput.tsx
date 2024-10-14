@@ -151,7 +151,7 @@ export default function MessageInput() {
           )}
           placeholder={
             apiKey
-              ? "How can Mistral help you today?"
+              ? "What do you want to know about Pierre?"
               : "Please set your API key in the sidebar to start chatting"
           }
           rows={1}
