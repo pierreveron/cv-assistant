@@ -87,6 +87,10 @@ export async function* streamResponse(
         }
         throw err;
       }
+      case err instanceof Error && err.name === "AbortError": {
+        console.log("Request was aborted");
+        return; // Gracefully exit the generator
+      }
       default: {
         throw err;
       }
