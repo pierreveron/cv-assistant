@@ -56,8 +56,8 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
             onClick={() => copyToClipboard(message.text)}
             className={classNames(
               "tw-p-1 tw-rounded",
-              "hover:tw-bg-gray-200 dark:hover:tw-bg-gray-600",
-              "tw-text-gray-500 dark:tw-text-gray-400"
+              "tw-text-gray-500 hover:tw-bg-gray-100 hover:tw-text-gray-800",
+              "dark:tw-text-gray-400 dark:hover:tw-bg-gray-800 dark:hover:tw-text-gray-200"
             )}
             title="Copy message"
           >
