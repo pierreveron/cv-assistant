@@ -54,7 +54,6 @@ export async function* streamResponse(
     abortSignal?: AbortSignal;
   }
 ): AsyncGenerator<string, void, unknown> {
-  console.log("Streaming response", params.apiKey);
   const mistral = new Mistral({
     apiKey: params.apiKey,
   });
@@ -76,7 +75,6 @@ export async function* streamResponse(
     );
 
     for await (const event of stream) {
-      console.log(event);
       if (event.data.choices[0]?.delta?.content) {
         yield event.data.choices[0].delta.content;
       }
