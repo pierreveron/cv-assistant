@@ -50,7 +50,13 @@ export default function MessageInput() {
   }, [inputMessage]);
 
   return (
-    <div className="tw-bg-gray-400 tw-rounded-xl tw-border tw-border-border tw-p-2 tw-shadow-sm tw-flex tw-flex-row tw-items-end tw-gap-2">
+    <div
+      className={classNames(
+        "tw-rounded-xl tw-border tw-border-border tw-p-2 tw-shadow-sm tw-flex tw-flex-row tw-items-end tw-gap-2",
+        "tw-bg-white tw-border-gray-200",
+        "dark:tw-bg-gray-800 dark:tw-border-gray-700"
+      )}
+    >
       <textarea
         ref={textareaRef}
         value={inputMessage}
@@ -58,7 +64,8 @@ export default function MessageInput() {
         onKeyDown={handleKeyDown}
         className={classNames(
           "tw-bg-inherit tw-flex-grow tw-p-2 tw-resize-none tw-overflow-scroll tw-min-h-0 tw-max-h-[10em] focus:tw-outline-none",
-          "placeholder:tw-text-gray-500"
+          "tw-text-gray-900",
+          "dark:tw-text-white"
         )}
         placeholder="How can Mistral help you today?"
         rows={1}
