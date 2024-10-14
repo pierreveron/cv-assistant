@@ -141,8 +141,16 @@ const Sidebar: React.FC = () => {
         "dark:tw-bg-gray-950 dark:tw-border-gray-700 dark:tw-text-gray-200"
       )}
     >
-      <h2 className="tw-text-lg tw-font-semibold tw-mb-4">Conversations</h2>
+      <h1 className="tw-text-2xl tw-font-bold tw-mb-6 tw-text-left tw-text-orange-500 dark:tw-text-orange-400">
+        Pierre Véron&apos;s CV Assistant
+      </h1>
+      <h2 className="tw-text-lg tw-font-semibold tw-mb-2">Conversations</h2>
       <div className="tw-flex tw-flex-col tw-gap-y-1 tw-flex-grow tw-overflow-y-auto">
+        {conversations.length === 0 && (
+          <p className="tw-text-gray-500 tw-text-left">
+            No conversations yet. Start a new conversation!
+          </p>
+        )}
         {conversations.map((conversation) => (
           <ConversationItem key={conversation.id} conversation={conversation} />
         ))}
