@@ -52,7 +52,7 @@ const ModelSelector: React.FC = () => {
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         className={classNames(
           "tw-text-2xl tw-font-bold tw-cursor-pointer tw-flex tw-items-center tw-px-3 tw-py-1 tw-rounded-md",
-          "tw-text-gray-900 hover:tw-bg-gray-200",
+          "tw-text-gray-900 hover:tw-bg-gray-100",
           "dark:tw-text-white dark:hover:tw-bg-gray-800"
         )}
       >
@@ -85,7 +85,7 @@ const ModelSelector: React.FC = () => {
               key={model.name}
               className={classNames(
                 "tw-block tw-w-full tw-text-left tw-px-4 tw-py-2 tw-text-sm",
-                "tw-text-gray-900 hover:tw-bg-gray-200",
+                "tw-text-gray-900 hover:tw-bg-gray-100",
                 "dark:tw-text-white dark:hover:tw-bg-gray-800"
               )}
               onClick={() => handleModelChange(model.name)}

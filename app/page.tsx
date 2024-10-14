@@ -18,7 +18,7 @@ export default function Home() {
           <button
             className={classNames(
               "tw-p-2 tw-rounded-full",
-              "tw-text-gray-900 hover:tw-bg-gray-200",
+              "tw-text-gray-900 hover:tw-bg-gray-100",
               "dark:tw-text-white dark:hover:tw-bg-gray-800"
             )}
             onClick={() => setSidebarOpen((v) => !v)}
@@ -45,7 +45,7 @@ export default function Home() {
             href="/"
             className={classNames(
               "tw-p-2 tw-rounded-full",
-              "tw-text-gray-900 hover:tw-bg-gray-200",
+              "tw-text-gray-900 hover:tw-bg-gray-100",
               "dark:tw-text-white dark:hover:tw-bg-gray-800"
             )}
           >
@@ -75,7 +75,7 @@ export default function Home() {
           onClick={toggleTheme}
           className={classNames(
             "tw-p-2 tw-rounded-full",
-            "tw-text-gray-900 hover:tw-bg-gray-200",
+            "tw-text-gray-900 hover:tw-bg-gray-100",
             "dark:tw-text-white dark:hover:tw-bg-gray-800"
           )}
           title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}

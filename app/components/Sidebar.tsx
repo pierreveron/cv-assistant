@@ -23,10 +23,10 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
       <div
         className={classNames(
           "tw-flex tw-justify-between tw-items-center tw-cursor-pointer tw-p-2 tw-rounded",
-          "tw-text-gray-800 hover:tw-bg-gray-200",
-          "dark:tw-text-gray-200 dark:hover:tw-bg-gray-700",
+          "tw-text-gray-800 hover:tw-bg-gray-100",
+          "dark:tw-text-gray-200 dark:hover:tw-bg-gray-800",
           {
-            "tw-bg-gray-100 dark:tw-bg-gray-600":
+            "tw-bg-gray-100 dark:tw-bg-gray-800":
               currentConversationId === conversation.id,
           }
         )}
