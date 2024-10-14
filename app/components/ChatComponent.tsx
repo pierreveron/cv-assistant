@@ -63,7 +63,9 @@ export default function ChatComponent() {
                   )}
                 >
                   {currentStreamedMessage ? (
-                    <Markdown>{currentStreamedMessage}</Markdown>
+                    <Markdown className="markdown-content">
+                      {currentStreamedMessage}
+                    </Markdown>
                   ) : (
                     <span className="tw-animate-pulse">Thinking...</span>
                   )}

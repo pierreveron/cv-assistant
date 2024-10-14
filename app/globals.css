@@ -5,3 +5,7 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.markdown-content a {
+  @apply tw-text-orange-500 hover:tw-text-orange-600 hover:tw-underline dark:tw-text-orange-400 dark:hover:tw-text-orange-500;
+}

@@ -49,7 +49,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
               : "tw-bg-gray-100 tw-text-gray-800 dark:tw-bg-gray-800 dark:tw-text-gray-200"
           )}
         >
-          <Markdown>{message.text}</Markdown>
+          <Markdown className="markdown-content">{message.text}</Markdown>
         </div>
         {!isUser && (
           <button
