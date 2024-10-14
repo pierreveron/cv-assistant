@@ -1,12 +1,11 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { useConversation } from "../providers/ConversationProvider";
 import { useApiKey } from "../providers/ApiKeyProvider";
 import classNames from "classnames";
 import Link from "next/link";
-
-interface SidebarProps {
-  open: boolean;
-}
+import { useSidebar } from "../providers/SidebarProvider";
 
 interface ConversationItemProps {
   conversation: {
@@ -20,7 +19,7 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
 }) => {
   const { deleteConversation } = useConversation();
   return (
-    <Link href={`/c/${conversation.id}`}>
+    <Link href={`/chat/${conversation.id}`}>
       <div
         className={classNames(
           "tw-flex tw-justify-between tw-items-center tw-cursor-pointer tw-p-2 hover:tw-bg-gray-100 dark:hover:tw-bg-gray-700 tw-rounded"
@@ -115,7 +114,8 @@ const ApiKeyInput: React.FC = () => {
   );
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ open }) => {
+const Sidebar: React.FC = () => {
+  const { isSidebarOpen } = useSidebar();
   const { conversations } = useConversation();
 
   return (
@@ -126,7 +126,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
         "dark:tw-bg-gray-800 dark:tw-border-gray-700",
         "tw-transition-all tw-duration-300 tw-ease-in-out",
         "tw-flex tw-flex-col tw-h-full",
-        open ? "tw-block" : "tw-hidden"
+        isSidebarOpen ? "tw-block" : "tw-hidden"
       )}
     >
       <h2 className="text-lg font-semibold mb-4">Conversations</h2>

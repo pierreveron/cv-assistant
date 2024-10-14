@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import AppProvider from "./providers/AppProvider";
 import classNames from "classnames";
+import Sidebar from "./components/Sidebar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,7 +34,14 @@ export default function RootLayout({
           "tw-bg-white dark:tw-bg-gray-950"
         )}
       >
-        <AppProvider>{children}</AppProvider>
+        <AppProvider>
+          <div className="tw-flex tw-flex-row tw-h-screen tw-w-full">
+            <Sidebar />
+            <div className="tw-flex tw-flex-col tw-flex-grow tw-h-screen tw-overflow-hidden">
+              {children}
+            </div>
+          </div>
+        </AppProvider>
       </body>
     </html>
   );
