@@ -10,19 +10,19 @@ const PlaceholderQuestions = ({
   onQuestionClick: (question: string) => void;
 }) => {
   const placeholderQuestions = [
-    "How does this chatbot work?",
-    "Why is Pierre Véron a great fit for Mistral?",
+    "Why is Pierre a great fit for Mistral?",
+    "Tell me about Pierre's experience with AI",
     "Where can I find more of Pierre's projects?",
   ];
 
   return (
-    <div className="tw-flex tw-flex-row tw-gap-2 tw-mb-2 tw-w-full">
+    <div className="tw-flex tw-flex-col tw-gap-2 tw-mb-4 tw-w-full">
       {placeholderQuestions.map((question, index) => (
         <div
           key={index}
           onClick={() => onQuestionClick(question)}
           className={classNames(
-            "tw-bg-gray-100 tw-text-gray-700 tw-px-3 tw-py-2 tw-rounded-lg tw-text-sm tw-cursor-pointer tw-transition-colors tw-duration-200",
+            "tw-bg-gray-100 tw-text-gray-700 tw-px-4 tw-py-3 tw-rounded-lg tw-text-sm tw-cursor-pointer tw-transition-colors tw-duration-200",
             "hover:tw-bg-gray-200",
             "dark:tw-bg-gray-700 dark:tw-text-gray-300 dark:hover:tw-bg-gray-600"
           )}
@@ -33,6 +33,21 @@ const PlaceholderQuestions = ({
     </div>
   );
 };
+
+const Disclaimer = () => (
+  <p className="tw-text-xs tw-text-gray-500 dark:tw-text-gray-400 tw-mt-2 tw-text-center">
+    This AI assistant is a demo created by{" "}
+    <a
+      href="https://www.linkedin.com/in/pierre-veron/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="tw-text-orange-500 hover:tw-underline"
+    >
+      Pierre Véron
+    </a>{" "}
+    using Mistral AI technology. Responses may not always be accurate.
+  </p>
+);
 
 export default function MessageInput() {
   const { isLoading, addMessage, stopBotMessage, messages } = useChat();
@@ -86,7 +101,15 @@ export default function MessageInput() {
   return (
     <div className="tw-flex tw-flex-col tw-items-center tw-w-full tw-max-w-[80%] tw-mx-auto">
       {messages.length === 0 && (
-        <PlaceholderQuestions onQuestionClick={handleQuestionClick} />
+        <>
+          <h2 className="tw-text-xl tw-font-semibold tw-mb-2 tw-text-center">
+            Welcome to Pierre Véron&apos;s CV Assistant
+          </h2>
+          <p className="tw-text-sm tw-text-gray-600 dark:tw-text-gray-400 tw-mb-4 tw-text-center">
+            Ask me anything about Pierre&apos;s skills and experience!
+          </p>
+          <PlaceholderQuestions onQuestionClick={handleQuestionClick} />
+        </>
       )}
 
       <div
@@ -153,6 +176,8 @@ export default function MessageInput() {
           )}
         </button>
       </div>
+
+      <Disclaimer />
     </div>
   );
 }
