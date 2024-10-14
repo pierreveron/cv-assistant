@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState } from "react";
+"use client";
+
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface ApiKeyContextType {
   apiKey: string;
@@ -10,9 +12,14 @@ const ApiKeyContext = createContext<ApiKeyContextType | undefined>(undefined);
 export const ApiKeyProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [apiKey, setApiKey] = useState<string>(
-    () => localStorage.getItem("apiKey") || ""
-  );
+  const [apiKey, setApiKey] = useState<string>("");
+
+  useEffect(() => {
+    const key = localStorage.getItem("apiKey");
+    if (key) {
+      setApiKey(key);
+    }
+  }, []);
 
   const handleSetApiKey = (key: string) => {
     setApiKey(key);
