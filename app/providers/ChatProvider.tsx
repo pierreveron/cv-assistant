@@ -10,7 +10,6 @@ import { Message } from "../utils/types";
 import { InvalidApiKeyError, Model, streamResponse } from "../utils/mistralai";
 import { useApiKey } from "./ApiKeyProvider";
 import { useConversation } from "./ConversationProvider";
-import { usePathname } from "next/navigation";
 
 interface ChatContextType {
   messages: Message[];
@@ -45,21 +44,12 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     "mistral-small-latest"
   );
   const { apiKey } = useApiKey();
-  const { getConversationMessages, updateConversationMessages, conversations } =
-    useConversation();
-
-  const pathname = usePathname();
-
-  const [currentConversationId, setCurrentConversationId] = useState<
-    string | null
-  >(null);
-
-  useEffect(() => {
-    // Get the conversation ID from the URL path
-    const pathParts = pathname.split("/");
-    const conversationId = pathParts[pathParts.length - 1];
-    setCurrentConversationId(conversationId || null);
-  }, [pathname, conversations, getConversationMessages]);
+  const {
+    currentConversationId,
+    getConversationMessages,
+    updateConversationMessages,
+    conversations,
+  } = useConversation();
 
   useEffect(() => {
     if (

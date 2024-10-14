@@ -8,7 +8,7 @@ import React, {
   useEffect,
 } from "react";
 import { Message } from "../utils/types";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface Conversation {
   id: string;
@@ -16,6 +16,7 @@ interface Conversation {
 }
 
 interface ConversationContextType {
+  currentConversationId: string | null;
   conversations: Conversation[];
   createConversation: () => void;
   updateConversation: (id: string, updates: Partial<Conversation>) => void;
@@ -42,16 +43,25 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const router = useRouter();
+  const pathname = usePathname();
+  const [currentConversationId, setCurrentConversationId] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
-    // Load conversations from localStorage when the component mounts (client-side only)
     const savedConversations = localStorage.getItem("conversations");
     if (savedConversations) {
       setConversations(JSON.parse(savedConversations));
     }
   }, []);
 
-  const router = useRouter();
+  useEffect(() => {
+    // Get the conversation ID from the URL path
+    const pathParts = pathname.split("/");
+    const conversationId = pathParts[pathParts.length - 1];
+    setCurrentConversationId(conversationId || null);
+  }, [pathname]);
 
   useEffect(() => {
     localStorage.setItem("conversations", JSON.stringify(conversations));
@@ -79,10 +89,12 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
   const deleteConversation = useCallback(
     (id: string) => {
       setConversations((prev) => prev.filter((conv) => conv.id !== id));
-      router.push("/");
+      if (currentConversationId === id) {
+        router.push("/");
+      }
       localStorage.removeItem(`messages_${id}`);
     },
-    [router]
+    [currentConversationId, router]
   );
 
   const updateConversationMessages = useCallback(
@@ -103,6 +115,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <ConversationContext.Provider
       value={{
+        currentConversationId,
         conversations,
         createConversation,
         updateConversation,
