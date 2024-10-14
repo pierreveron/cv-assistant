@@ -109,14 +109,14 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         setMessages((prev) => [...prev, botMessage]);
 
         // Update the conversation title after adding the new message
-        const title = await generateConversationTitle(finalMessages, {
+        generateConversationTitle(finalMessages, {
           apiKey,
           model: currentModel,
+        }).then((title) => {
+          if (title) {
+            updateConversationTitle(conversationId, title);
+          }
         });
-
-        if (title) {
-          updateConversationTitle(conversationId, title);
-        }
       } catch (error) {
         if (error instanceof InvalidApiKeyError) {
           alert(
