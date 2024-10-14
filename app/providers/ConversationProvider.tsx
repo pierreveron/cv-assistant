@@ -85,8 +85,11 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
       return newConversations;
     });
 
+    setCurrentConversationId(newId);
+    router.push(`/chat/${newId}`);
+
     return newId;
-  }, []);
+  }, [router]);
 
   const updateConversationTitle = useCallback((id: string, title: string) => {
     setConversations((prev) => {
@@ -106,6 +109,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
         return newConversations;
       });
       if (currentConversationId === id) {
+        setCurrentConversationId(null);
         router.push("/");
       }
       localStorage.removeItem(`messages_${id}`);

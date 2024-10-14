@@ -33,7 +33,7 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
         <button
           className="tw-text-gray-500 hover:tw-text-red-500"
           onClick={(e) => {
-            e.stopPropagation();
+            e.preventDefault();
             deleteConversation(conversation.id);
           }}
         >
