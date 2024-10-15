@@ -4,9 +4,9 @@ This project is an AI-powered chat application that allows users to interact wit
 
 ## How to Use
 
-1. Visit the application at [https://mistralai-chat-app.vercel.app](https://mistralai-chat-app.vercel.app)
+1. Visit the application at [https://pierreveron-cv-assistant.vercel.app/](https://pierreveron-cv-assistant.vercel.app/)
 
-2. On the sidebar, you'll see an input field for the Mistral API key. Enter your Mistral API key here and click "Save".
+2. On the sidebar, you'll see an input field for the Mistral API key. Enter your Mistral API key here and click "Save". It will be stored in the browser's local storage.
 
 3. Once the API key is saved, you can start a new conversation by typing your question in the chat input at the bottom of the screen.
 
