@@ -43,7 +43,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [currentStreamedMessage, setCurrentStreamedMessage] = useState("");
   const abortControllerRef = useRef<AbortController | null>(null);
   const [currentModel, setCurrentModel] = useState<Model>(
-    "mistral-small-latest"
+    "mistral-large-latest"
   );
   const { apiKey } = useApiKey();
   const {
