@@ -9,11 +9,13 @@ interface MessageBubbleProps {
     text: string;
   };
   copyToClipboard: (text: string) => void;
+  isStreaming?: boolean;
 }
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   message,
   copyToClipboard,
+  isStreaming = false,
 }) => {
   const isUser = message.sender === "user";
 
@@ -49,9 +51,15 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
               : "tw-bg-gray-100 tw-text-gray-800 dark:tw-bg-gray-800 dark:tw-text-gray-200"
           )}
         >
-          <Markdown className="markdown-content">{message.text}</Markdown>
+          {isStreaming && !message.text ? (
+            <span className="tw-animate-[pulse_1s_ease-in-out_infinite]">
+              Thinking...
+            </span>
+          ) : (
+            <Markdown className="markdown-content">{message.text}</Markdown>
+          )}
         </div>
-        {!isUser && (
+        {!isUser && !isStreaming && (
           <button
             onClick={() => copyToClipboard(message.text)}
             className={classNames(
