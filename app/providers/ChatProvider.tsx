@@ -50,24 +50,30 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     currentConversationId,
     getConversationMessages,
     updateConversationMessages,
-    conversations,
     createConversation,
     updateConversationTitle,
   } = useConversation();
 
+  const resetChat = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setMessages([]);
+    setIsLoading(false);
+    setCurrentStreamedMessage("");
+  }, []);
+
   useEffect(() => {
-    if (
-      currentConversationId &&
-      conversations.some((conv) => conv.id === currentConversationId)
-    ) {
+    if (currentConversationId) {
       const conversationMessages = getConversationMessages(
         currentConversationId
       );
       setMessages(conversationMessages);
     } else {
-      setMessages([]);
+      resetChat();
     }
-  }, [conversations, currentConversationId, getConversationMessages]);
+  }, [currentConversationId, getConversationMessages, resetChat]);
 
   const addMessage = useCallback(
     async (message: string) => {
@@ -106,7 +112,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         } as Message;
         const finalMessages = [...updatedMessages, botMessage];
         updateConversationMessages(conversationId, finalMessages);
-        setMessages((prev) => [...prev, botMessage]);
+
+        if (abortControllerRef.current) {
+          setMessages((prev) => [...prev, botMessage]);
+        }
 
         // Update the conversation title after adding the new message
         generateConversationTitle(finalMessages, {
@@ -166,15 +175,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Could not copy text: ", err);
       }
     );
-  }, []);
-
-  const resetChat = useCallback(() => {
-    setMessages([]);
-    setIsLoading(false);
-    setCurrentStreamedMessage("");
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
   }, []);
 
   const setModel = useCallback((model: Model) => {
