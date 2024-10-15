@@ -29,10 +29,12 @@ const PlaceholderQuestions = ({
             }
           }}
           className={classNames(
-            "tw-bg-gray-100 tw-text-gray-700 tw-px-4 tw-py-3 tw-rounded-lg tw-text-sm tw-cursor-pointer",
-            "hover:tw-bg-gray-200",
+            "tw-px-4 tw-py-3 tw-rounded-lg tw-text-sm",
+            "tw-bg-gray-100 tw-text-gray-700 hover:tw-bg-gray-200",
             "dark:tw-bg-gray-700 dark:tw-text-gray-300 dark:hover:tw-bg-gray-600",
-            disabled && "tw-opacity-50 tw-cursor-not-allowed"
+            disabled
+              ? "tw-opacity-50 tw-cursor-not-allowed"
+              : "tw-cursor-pointer"
           )}
           title={
             disabled
