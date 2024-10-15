@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useConversation } from "../providers/ConversationProvider";
 import { useApiKey } from "../providers/ApiKeyProvider";
 import classNames from "classnames";
@@ -129,6 +129,15 @@ const Sidebar: React.FC = () => {
   const { isSidebarOpen } = useSidebar();
   const { conversations } = useConversation();
 
+  const sortedConversations = useMemo(
+    () =>
+      conversations.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      ),
+    [conversations]
+  );
+
   return (
     <div
       className={classNames(
@@ -152,7 +161,7 @@ const Sidebar: React.FC = () => {
             No conversations yet. Start a new conversation!
           </p>
         )}
-        {conversations.map((conversation) => (
+        {sortedConversations.map((conversation) => (
           <ConversationItem key={conversation.id} conversation={conversation} />
         ))}
       </div>

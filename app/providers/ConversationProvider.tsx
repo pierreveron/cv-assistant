@@ -13,6 +13,7 @@ import { usePathname, useRouter } from "next/navigation";
 interface ConversationMetadata {
   id: string;
   title: string;
+  createdAt: string;
 }
 
 interface ConversationContextType {
@@ -79,6 +80,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({
       const newConversation: ConversationMetadata = {
         id: newId,
         title: "New chat",
+        createdAt: new Date().toISOString(),
       };
       const newConversations = [...prev, newConversation];
       storeConversations(newConversations);
